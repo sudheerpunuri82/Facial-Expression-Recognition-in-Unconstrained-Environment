@@ -5,7 +5,7 @@ This section describes the ensemble methodology for Facial Emotion Recognition (
 
     Confidence Scores of Base Models:
         Each base model ii (i.e., DenseNet169, EfficientNetB7, InceptionV3) provides confidence scores for CC emotion classes. Let the confidence scores from each base model ii be:
-        Pri1,Pri2,Pri3,…,PriC
+       $ Pri1,Pri2,Pri3,…,PriC$
         Pri1​,Pri2​,Pri3​,…,PriC​ where i∈{1,2,3}i∈{1,2,3}.
         Each model’s confidence scores sum up to 1, ensuring a valid probability distribution:
         ∑k=1CPrik=1,∀i∈{1,2,3}
