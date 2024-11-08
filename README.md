@@ -1,53 +1,50 @@
 # Facial-Expression-Recognition-in-Unconstrained-Environment
-the mathematical steps involved in your ensemble model, along with their significance:
+Mathematical Foundation of the Ensemble Model Construction
 
-    Confidence Scores of Base Models (Eqn. 2):
-        The confidence scores (Pri1,Pri2,…,PriC)(Pri1​,Pri2​,…,PriC​) are provided by each base model for each of the CC classes.
-        Equation (2) ensures that for each model ii, the sum of these probabilities over all classes equals 1, meaning that the scores are normalized to form a probability distribution.
-        This normalization is essential as it aligns the outputs of the base models and makes the ensemble calculations consistent.
+This section describes the ensemble methodology for Facial Emotion Recognition (FER) using three deep learning models, each providing confidence scores. The ensemble leverages a rank-based fusion strategy with non-linear functions (exponential and hyperbolic tangent) to generate fuzzy ranks, enhancing the robustness and accuracy of emotion classification. Here’s a breakdown of each step:
 
-    Fuzzy Rank Generation with Non-linear Functions (Eqn. 3 & 4):
+    Confidence Scores of Base Models:
+        Each base model ii (i.e., DenseNet169, EfficientNetB7, InceptionV3) provides confidence scores for CC emotion classes. Let the confidence scores from each base model ii be:
+        Pri1,Pri2,Pri3,…,PriC
+        Pri1​,Pri2​,Pri3​,…,PriC​ where i∈{1,2,3}i∈{1,2,3}.
+        Each model’s confidence scores sum up to 1, ensuring a valid probability distribution:
+        ∑k=1CPrik=1,∀i∈{1,2,3}
+        k=1∑C​Prik​=1,∀i∈{1,2,3}
 
-        Exponential (Eqn. 3):
+    Non-linear Fuzzy Rank Transformation:
+        To transform the confidence scores into ranks, two non-linear functions, exponential and hyperbolic tangent, are applied:
         y=1−exp⁡(−(x−1)22)
         y=1−exp(−2(x−1)2​)
-            This function maps the confidence score to a fuzzy rank. Because of its downward concavity in the interval [0,1], higher probabilities result in ranks that are closer to 1.
-            This reflects a "reward" as confidence increases, which is a property that contributes to distinguishing high-confidence predictions from low-confidence ones.
-
-        Tanh (Eqn. 4):
         y=1−tanh⁡((x−1)22)
         y=1−tanh(2(x−1)2​)
-            This function similarly transforms the confidence scores into ranks, but with an upward concave shape, moving values closer to 0 as confidence decreases.
-            The choice of tanh contributes a contrast in behavior compared to the exponential function, capturing different aspects of the rank score as the probabilities vary.
+        Here, xx represents the confidence score for a class, and these functions transform scores into fuzzy ranks, adding non-linearity that enhances discrimination among classes.
 
-    Application of Fuzzy Ranking Functions (Eqn. 5 & 6):
-        Rank Calculation (Eqn. 5 & 6):
-        Ranki1,k=1−tanh⁡((Prik−1)22)
-        Ranki1,k​=1−tanh(2(Prik​−1)2​)
-        Ranki2,k=1−exp⁡(−(Prik−1)22)
-        Ranki2,k​=1−exp(−2(Prik​−1)2​)
-        These equations replace xx with the actual confidence score PrikPrik​ from each base model and assign a fuzzy rank for each class confidence score, balancing both the exponential and tanh responses.
-        Together, these ranks capture subtle variations in the confidence scores, with the exponential function controlling rapid score changes and the tanh providing a softer gradient, which improves robustness in final rank estimation.
+    Applying Non-linear Functions to Confidence Scores:
+        The confidence scores PrikPrik​ are passed through each function to obtain fuzzy ranks:
+        Ranki1k=1−tanh⁡((Prik−1)22)
+        Ranki1k​​=1−tanh(2(Prik​−1)2​)
+        Ranki2k=1−exp⁡(−(Prik−1)22)
+        Ranki2k​​=1−exp(−2(Prik​−1)2​)
+        Significance of Each Function:
+            Exponential function: Has a downward concavity, creating a rank output that approaches 1 as probability approaches 1.
+            Hyperbolic tangent function: Has an upward concavity in the [0,1] domain, resulting in rank values that increase as probability moves closer to 0.
 
-    Fused Rank Scores (Eqn. 7):
-    RSik=Ranki1×Ranki2
-    RSik​=Ranki1​×Ranki2​
-        By multiplying the fuzzy ranks from both functions, the fused rank score captures the cumulative confidence across models, with the exponential function’s narrower range influencing the final rank score more.
-        This approach gives more weight to the highest-confidence classes by dampening lower-confidence ranks, enhancing class distinctions for the ensemble.
+    Fused Rank Scores Calculation:
+        The fuzzy ranks from both functions are combined to calculate a fused rank score for each class:
+        RSik=Ranki1k×Ranki2k
+        RSik​=Ranki1k​​×Ranki2k​​
+        Here, Ranki1ki1k​​ offers a reward for correct classifications (higher scores for probable classes), while Ranki2ki2k​​ captures the divergence, ensuring balanced influence on the final rank.
 
-    Final Fused Score (Eqn. 8):
-    FSk=∑i=1LRSik
-    FSk​=i=1∑L​RSik​
-        The final score for each class FSkFSk is calculated by summing the fused rank scores across all models, which aggregates the contributions of each base model’s confidence toward that class.
-        This sum enables the ensemble to synthesize the base model outputs, with higher scores signifying greater confidence from multiple models in a specific class.
+    Final Fused Score Calculation:
+        The fused scores RSikRSik​ are aggregated across all models to produce a final score tuple:
+        FSk=∑i=1LRSik,∀k=1,2,3,…,C
+        FSk​=i=1∑L​RSik​,∀k=1,2,3,…,C
+        This step aggregates the rank information from each base model, capturing the degree of confidence towards each class.
 
-    Winner Class Selection (Eqn. 9):
-    Emotion class(I)=min⁡∀kFSk
-    Emotion class(I)=∀kmin​FSk
-        The final classification is determined by identifying the class with the lowest FSkFSk value, which represents the class that the ensemble is most confident about.
-        This fusion-based approach, with a focus on the minimum score, minimizes the error in cases where confidence diverges across models and helps in achieving accurate class selection.
+    Emotion Class Selection:
+        The class with the minimum fused score FSkFSk​ is selected as the predicted emotion class:
+        Emotion class (I)=min⁡∀kFSk
+        Emotion class (I)=∀kmin​FSk​
+        This approach helps in selecting the most probable emotion class, based on the fused confidence across models.
 
-Overall Significance:
-
-    By employing both exponential and tanh functions, the ensemble model benefits from a nuanced ranking strategy that captures high-confidence scores and minimizes lower-confidence influences, yielding reliable class predictions.
-    This method allows the ensemble to exploit the strengths of each base model's score distribution, ensuring robustness and accuracy in classification.
+This ensemble strategy, with its rank-based fusion approach, provides a unique method to combine the strengths of different models, achieving a robust FER system suited for real-world scenarios. Each step contributes to the system's accuracy by fine-tuning the handling of confidence scores and enhancing the model's interpretability.
