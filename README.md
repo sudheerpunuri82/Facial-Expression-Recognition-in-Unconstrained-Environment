@@ -3,13 +3,17 @@ In the context of Facial Expression Recognition (FER), an unconstrained environm
 
 These real-world scenarios introduce factors that make FER more complex, such as:
  
- #Lighting Variation: Natural and artificial lighting changes can create shadows, glares, or reflections on the face, affecting image clarity and expression detection.
+ # Lighting Variation: 
+ Natural and artificial lighting changes can create shadows, glares, or reflections on the face, affecting image clarity and expression detection.
  
- Pose Variation: People often look in various directions, and their faces may not always be fully visible, introducing challenges in detecting expressions from different angles.
+ # Pose Variation: 
+ People often look in various directions, and their faces may not always be fully visible, introducing challenges in detecting expressions from different angles.
  
- Background Complexity: Busy or unpredictable backgrounds may cause distractions or introduce noise in image processing.
+ # Background Complexity: 
+ Busy or unpredictable backgrounds may cause distractions or introduce noise in image processing.
  
- Occlusions: Parts of the face may be obscured by objects (e.g., glasses, hats, or hands) or other people, making expression detection harder.
+ # Occlusions: 
+ Parts of the face may be obscured by objects (e.g., glasses, hats, or hands) or other people, making expression detection harder.
  
  Expression Intensity and Subtlety: In everyday settings, expressions can be subtle or mixed (e.g., a slight smile combined with a frown), which is difficult to capture accurately.
  
