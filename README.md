@@ -6,7 +6,7 @@ These real-world scenarios introduce factors that make FER more complex, such as
  **Lighting Variation:**
  Natural and artificial lighting changes can create shadows, glares, or reflections on the face, affecting image clarity and expression detection.
  
- Pose Variation: 
+ **Pose Variation:**
  People often look in various directions, and their faces may not always be fully visible, introducing challenges in detecting expressions from different angles.
  
  **Background Complexity:** 
